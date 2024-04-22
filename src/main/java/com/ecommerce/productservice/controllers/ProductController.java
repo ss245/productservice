@@ -1,14 +1,17 @@
 package com.ecommerce.productservice.controllers;
 
 import com.ecommerce.productservice.dtos.GetProductDto;
+import com.ecommerce.productservice.exceptions.NotFoundException;
 import com.ecommerce.productservice.models.Product;
 import com.ecommerce.productservice.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-//@RequestMapping("/products")
+@RequestMapping("/products")
 public class ProductController {
 
     /*
@@ -33,7 +36,7 @@ public class ProductController {
     }*/
 
 
-    @PostMapping("/products")
+    @PostMapping("")
     public ResponseEntity<String> createProduct(@RequestBody Product product){
         return ResponseEntity.ok("Here is price of your product: " + product.getPrice());
       //  return ResponseEntity.ok("Here is your product: " + product.getName());
@@ -48,9 +51,16 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("products/{id}")
-    public @ResponseBody GetProductDto getProductById(@PathVariable("id") Long id){
+    @GetMapping("/{id}")
+    public @ResponseBody GetProductDto getProductById(@PathVariable("id") Long id) throws NotFoundException {
         return productService.getProductById(id);
+    }
+
+
+    // Create an API that will give all products
+    @GetMapping("")
+    public @ResponseBody List<GetProductDto> getAllProducts(){
+        return productService.getAllProducts();
     }
 
 }
