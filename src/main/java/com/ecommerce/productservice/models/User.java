@@ -1,9 +1,6 @@
 package com.ecommerce.productservice.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +12,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Setter
 // Telling Hibernate to create a table for you.
 @Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class User {
     @Id
     @GeneratedValue
