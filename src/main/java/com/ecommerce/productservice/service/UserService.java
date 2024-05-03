@@ -1,5 +1,7 @@
 package com.ecommerce.productservice.service;
 
+import com.ecommerce.productservice.dtos.GetInstructorDto;
+import com.ecommerce.productservice.models.Batch;
 import com.ecommerce.productservice.models.Instructor;
 import com.ecommerce.productservice.models.Learner;
 import com.ecommerce.productservice.models.User;
@@ -8,6 +10,7 @@ import com.ecommerce.productservice.repository.LearnerRepository;
 import com.ecommerce.productservice.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -62,8 +65,33 @@ public class UserService {
     public List<User> getUserByName(String name) {
         return userRepository.findByName(name);
     }
-    public List<Instructor> getInstructorByName(String name) {
-        return instructorRepository.findByName(name);
+    public List<GetInstructorDto> getInstructorByName(String name) {
+        List<Instructor> instructors =  instructorRepository.findByName(name);
+        //return instructorRepository.findByName(name);
+        System.out.println(instructors.get(1).getBatch());
+        //return instructors;
+        for(Instructor instructor : instructors) {
+            for (Batch batch : instructor.getBatch()) {
+                System.out.println(batch.getName());
+            }
+        }
+        List<GetInstructorDto> instructorDtos = new ArrayList<>();
+        for(Instructor instructor : instructors) {
+            GetInstructorDto getInstructorDto = new GetInstructorDto();
+            getInstructorDto.setId(instructor.getId());
+            getInstructorDto.setName(instructor.getName());
+            getInstructorDto.setEmail(instructor.getEmail());
+            List<String> batchNames = new ArrayList<>();
+            List<Long> batchIds = new ArrayList<>();
+            for(Batch batch : instructor.getBatch()){
+                batchNames.add(batch.getName());
+                batchIds.add(batch.getId());
+            }
+            getInstructorDto.setBatchName(batchNames);
+            getInstructorDto.setBatchId(batchIds);
+            instructorDtos.add(getInstructorDto);
+        }
+        return instructorDtos;
     }
 
 }
