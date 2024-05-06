@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 
@@ -30,8 +32,8 @@ public class UserService {
     }
 
 //    public UserService(UserRepository userRepository) {
-  //      this.userRepository = userRepository;
-    //}
+//        this.userRepository = userRepository;
+//    }
 
     public User createUser(String name, String email) {
         User user = new User();
@@ -65,6 +67,7 @@ public class UserService {
     public List<User> getUserByName(String name) {
         return userRepository.findByName(name);
     }
+
     public List<GetInstructorDto> getInstructorByName(String name) {
         List<Instructor> instructors =  instructorRepository.findByName(name);
         //return instructorRepository.findByName(name);
@@ -94,4 +97,47 @@ public class UserService {
         return instructorDtos;
     }
 
+
+
+    public GetInstructorDto getInstructorById(UUID uuid) {
+        Instructor instructor=instructorRepository.findById(uuid).get();
+        GetInstructorDto getInstructorDto = new GetInstructorDto();
+        getInstructorDto.setId(instructor.getId());
+        getInstructorDto.setName(instructor.getName());
+        getInstructorDto.setEmail(instructor.getEmail());
+        List<String> batchNames = new ArrayList<>();
+        List<Long> batchIds = new ArrayList<>();
+        for(Batch batch : instructor.getBatch()){
+            batchNames.add(batch.getName());
+        }
+        getInstructorDto.setBatchName(batchNames);
+        for(Batch batch : instructor.getBatch()){
+            batchIds.add(batch.getId());
+        }
+        getInstructorDto.setBatchId(batchIds);
+        return getInstructorDto;
+    }
+
+    public List<GetInstructorDto> getInstructorByIds(List<UUID> uuid) {
+        List<Instructor> instructors = instructorRepository.findAllByIdIn(uuid);
+        List<GetInstructorDto> getInstructorDtos = new ArrayList<>();
+        for (Instructor instructor : instructors){
+            GetInstructorDto getInstructorDto = new GetInstructorDto();
+            getInstructorDto.setId(instructor.getId());
+            getInstructorDto.setName(instructor.getName());
+            getInstructorDto.setEmail(instructor.getEmail());
+            List<String> batchNames = new ArrayList<>();
+            List<Long> batchIds = new ArrayList<>();
+            for(Batch batch : instructor.getBatch()){
+                batchNames.add(batch.getName());
+            }
+            getInstructorDto.setBatchName(batchNames);
+            for(Batch batch : instructor.getBatch()){
+                batchIds.add(batch.getId());
+            }
+            getInstructorDto.setBatchId(batchIds);
+            getInstructorDtos.add(getInstructorDto);
+        }
+        return getInstructorDtos;
+    }
 }
