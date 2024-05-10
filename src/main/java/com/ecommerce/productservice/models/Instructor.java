@@ -15,7 +15,7 @@ import java.util.List;
 public class Instructor extends User{
     private Double salary;
     private String skill;
-    @OneToMany(mappedBy = "instructor", cascade = CascadeType.REMOVE)
+    @OneToMany()
     @Fetch(FetchMode.JOIN)
     private List<Batch> batch;
 }
